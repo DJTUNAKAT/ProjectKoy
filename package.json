@@ -1,7 +1,7 @@
 {
   "name": "textingapp",
   "version": "1.0.0",
-  "description": "Multiplayer chat app with Phaser and random sounds",
+  "description": "Multiplayer chat app with Phaser, images, darkmode, and random sounds",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

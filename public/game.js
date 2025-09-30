@@ -15,6 +15,12 @@ fetch("/sounds/list")
   .then(res => res.json())
   .then(files => { notificationSounds = files.map(f => "sounds/" + f); });
 
+// Preload sounds after first click (to satisfy browser autoplay)
+document.body.addEventListener("click", () => {
+  notificationSounds.forEach(s => new Audio(s));
+}, { once: true });
+
+// Play random sound
 function playRandomSound() {
   if(notificationSounds.length === 0) return;
   const sound = new Audio(notificationSounds[Math.floor(Math.random() * notificationSounds.length)]);
