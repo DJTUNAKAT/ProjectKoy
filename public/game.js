@@ -9,6 +9,18 @@ const messageInput = document.getElementById("message");
 const sendBtn = document.getElementById("send");
 const imageInput = document.getElementById("imageInput");
 
+// Dynamic random sounds
+let notificationSounds = [];
+fetch("/sounds/list")
+  .then(res => res.json())
+  .then(files => { notificationSounds = files.map(f => "sounds/" + f); });
+
+function playRandomSound() {
+  if(notificationSounds.length === 0) return;
+  const sound = new Audio(notificationSounds[Math.floor(Math.random() * notificationSounds.length)]);
+  sound.play();
+}
+
 // Add message
 function addMessage(name, msg, self=false, color=null, image=null) {
   const bubble = document.createElement("div");
@@ -49,7 +61,7 @@ sendBtn.addEventListener("click", () => {
   }
 });
 
-// Spacebar works
+// Spacebar sends
 messageInput.addEventListener("keypress", e => {
   if(e.key === "Enter") sendBtn.click();
 });
@@ -58,6 +70,7 @@ messageInput.addEventListener("keypress", e => {
 socket.on("chat", data => {
   if(data.name === playerName) return;
   addMessage(data.name, data.message || "", false, data.color, data.image || null);
+  playRandomSound();
 });
 
 // Phaser fullscreen
@@ -66,7 +79,6 @@ const config = {
   width: window.innerWidth,
   height: window.innerHeight - document.getElementById("controls").offsetHeight - document.getElementById("chatContainer").offsetHeight,
   backgroundColor: "#1c1c1e",
-  parent: null,
   scene: { preload, create, update }
 };
 

@@ -1,14 +1,14 @@
 {
   "name": "textingapp",
   "version": "1.0.0",
-  "description": "",
+  "description": "Multiplayer chat app with Phaser and random sounds",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "update": "git add . && git commit -m 'update' && git push origin main"
   },
   "keywords": [],
-  "author": "",
+  "author": "DJTUNAKAT",
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.2",
