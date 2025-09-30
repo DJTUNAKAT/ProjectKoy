@@ -10,25 +10,28 @@ const sendBtn = document.getElementById("send");
 const languageSelect = document.getElementById("languageSelect");
 const imageInput = document.getElementById("imageInput");
 
-// Translate function using LibreTranslate API
+// Translate function using LibreTranslate
 async function translate(msg, lang) {
   if(lang === "none") return msg;
 
   try {
-    const res = await fetch("https://libretranslate.com/translate", {
+    const res = await fetch("https://libretranslate.de/translate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         q: msg,
         source: "en",
-        target: lang
+        target: lang,
+        format: "text"
       })
     });
+
     const data = await res.json();
-    return data.translatedText;
+    if(data && data.translatedText) return data.translatedText;
+    return msg; // fallback if response is bad
   } catch(err) {
     console.error("Translation failed:", err);
-    return msg; // fallback to original
+    return msg; // fallback on error
   }
 }
 
