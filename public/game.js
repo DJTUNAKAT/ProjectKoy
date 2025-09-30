@@ -27,8 +27,7 @@ async function translate(msg, lang) {
     });
 
     const data = await res.json();
-    if(data && data.translatedText) return data.translatedText;
-    return msg; // fallback if response is bad
+    return data.translatedText || msg; // fallback
   } catch(err) {
     console.error("Translation failed:", err);
     return msg; // fallback on error
@@ -41,11 +40,13 @@ function addMessage(name, msg, self=false, color=null, image=null) {
   bubble.classList.add("bubble");
   bubble.classList.add(self ? "self" : "other");
   bubble.style.background = color || (self ? "#0b93f6" : "#fff");
+
   if(image) {
     bubble.innerHTML = `<strong>${name}:</strong><br><img src="${image}" style="max-width:200px;border-radius:10px">`;
   } else {
     bubble.innerHTML = `<strong>${name}:</strong> ${msg}`;
   }
+
   chatContainer.appendChild(bubble);
   chatContainer.scrollTop = chatContainer.scrollHeight;
 }
@@ -81,7 +82,7 @@ messageInput.addEventListener("keypress", e => {
 // Receive chat
 socket.on("chat", data => {
   if(data.name === playerName) return;
-  addMessage(data.name, data.message || "", false, data.color, data.image);
+  addMessage(data.name, data.message || "", false, data.color, data.image || null);
 });
 
 // Phaser setup
