@@ -9,25 +9,26 @@ const messageInput = document.getElementById("message");
 const sendBtn = document.getElementById("send");
 const imageInput = document.getElementById("imageInput");
 
-// Dynamic random sounds
+// Array to store sound file URLs
 let notificationSounds = [];
+
+// Fetch all sounds dynamically from server
 fetch("/sounds/list")
   .then(res => res.json())
-  .then(files => { notificationSounds = files.map(f => "sounds/" + f); });
+  .then(files => {
+    notificationSounds = files.map(f => "sounds/" + f);
+    // Preload all sounds by creating Audio objects
+    notificationSounds = notificationSounds.map(f => new Audio(f));
+  });
 
-// Preload sounds after first click (to satisfy browser autoplay)
-document.body.addEventListener("click", () => {
-  notificationSounds.forEach(s => new Audio(s));
-}, { once: true });
-
-// Play random sound
+// Play random sound function
 function playRandomSound() {
   if(notificationSounds.length === 0) return;
-  const sound = new Audio(notificationSounds[Math.floor(Math.random() * notificationSounds.length)]);
-  sound.play();
+  const randIndex = Math.floor(Math.random() * notificationSounds.length);
+  notificationSounds[randIndex].play().catch(err => console.log(err));
 }
 
-// Add message
+// Add message to chat
 function addMessage(name, msg, self=false, color=null, image=null) {
   const bubble = document.createElement("div");
   bubble.classList.add("bubble");
@@ -43,6 +44,9 @@ function addMessage(name, msg, self=false, color=null, image=null) {
 
   chatContainer.appendChild(bubble);
   chatContainer.scrollTop = chatContainer.scrollHeight;
+
+  // Play sound only for received messages, not your own
+  if(!self) playRandomSound();
 }
 
 // Send chat
@@ -76,52 +80,4 @@ messageInput.addEventListener("keypress", e => {
 socket.on("chat", data => {
   if(data.name === playerName) return;
   addMessage(data.name, data.message || "", false, data.color, data.image || null);
-  playRandomSound();
-});
-
-// Phaser fullscreen
-const config = {
-  type: Phaser.AUTO,
-  width: window.innerWidth,
-  height: window.innerHeight - document.getElementById("controls").offsetHeight - document.getElementById("chatContainer").offsetHeight,
-  backgroundColor: "#1c1c1e",
-  scene: { preload, create, update }
-};
-
-let player, cursors, otherPlayers = {}, game;
-
-function preload() {
-  this.load.image("player", "https://labs.phaser.io/assets/sprites/phaser-dude.png");
-}
-
-function create() {
-  player = this.add.sprite(400, 200, "player");
-  cursors = this.input.keyboard.createCursorKeys();
-  game = this;
-
-  messageInput.addEventListener("focus", () => { game.input.keyboard.enabled = false; });
-  messageInput.addEventListener("blur", () => { game.input.keyboard.enabled = true; });
-
-  socket.on("move", data => {
-    if(data.id === socket.id) return;
-    if(!otherPlayers[data.id]) otherPlayers[data.id] = this.add.sprite(data.x, data.y, "player");
-    else { otherPlayers[data.id].x = data.x; otherPlayers[data.id].y = data.y; }
-  });
-}
-
-function update() {
-  let moved = false;
-  if(cursors.left.isDown) { player.x -= 2; moved = true; }
-  if(cursors.right.isDown) { player.x += 2; moved = true; }
-  if(cursors.up.isDown) { player.y -= 2; moved = true; }
-  if(cursors.down.isDown) { player.y += 2; moved = true; }
-
-  if(moved) socket.emit("move", { x: player.x, y: player.y });
-}
-
-new Phaser.Game(config);
-
-// Resize Phaser on window resize
-window.addEventListener("resize", () => {
-  game.scale.resize(window.innerWidth, window.innerHeight - document.getElementById("controls").offsetHeight - document.getElementById("chatContainer").offsetHeight);
 });
