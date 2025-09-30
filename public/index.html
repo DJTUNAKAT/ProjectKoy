@@ -14,6 +14,7 @@
     flex-direction: column;
     height: 100vh;
   }
+
   #chatContainer {
     flex: 1;
     overflow-y: auto;
@@ -22,29 +23,34 @@
     flex-direction: column;
     gap: 8px;
   }
+
   .bubble {
     max-width: 70%;
     padding: 10px;
     border-radius: 20px;
     word-wrap: break-word;
   }
+
   .bubble.self {
     background: #0b93f6;
     color: white;
     align-self: flex-end;
     border-bottom-right-radius: 4px;
   }
+
   .bubble.other {
     background: #fff;
     color: black;
     align-self: flex-start;
     border-bottom-left-radius: 4px;
   }
+
   #inputContainer {
     display: flex;
     padding: 10px;
     background: #f1f1f1;
   }
+
   #message {
     flex: 1;
     padding: 10px;
@@ -52,6 +58,7 @@
     border: 1px solid #ccc;
     outline: none;
   }
+
   #send {
     margin-left: 10px;
     padding: 10px 20px;
@@ -66,7 +73,7 @@
 <body>
 <div id="chatContainer"></div>
 <div id="inputContainer">
-  <input id="message" type="text" placeholder="iMessage your girl..." />
+  <input id="message" type="text" placeholder="Message" />
   <button id="send">Send</button>
 </div>
 <script src="game.js"></script>
