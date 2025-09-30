@@ -2,92 +2,26 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Texting Game iMessage Style</title>
-<script src="/socket.io/socket.io.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.js"></script>
-<style>
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: #e5e5ea;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-#chatContainer {
-  flex: 1;
-  overflow-y: auto;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-@keyframes popIn {
-  0% { transform: scale(0.5); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
-}
-.bubble {
-  max-width: 70%;
-  padding: 10px;
-  border-radius: 20px;
-  word-wrap: break-word;
-  animation: popIn 0.3s ease;
-}
-.bubble.self {
-  background: #0b93f6;
-  color: white;
-  align-self: flex-end;
-  border-bottom-right-radius: 4px;
-}
-.bubble.other {
-  background: #fff;
-  color: black;
-  align-self: flex-start;
-  border-bottom-left-radius: 4px;
-}
-#inputContainer {
-  display: flex;
-  padding: 10px;
-  background: #f1f1f1;
-  gap: 5px;
-}
-#message {
-  flex: 1;
-  padding: 10px;
-  border-radius: 20px;
-  border: 1px solid #ccc;
-  outline: none;
-}
-#send {
-  padding: 10px 20px;
-  border-radius: 20px;
-  border: none;
-  background: #0b93f6;
-  color: white;
-  cursor: pointer;
-}
-#languageSelect {
-  padding: 5px 10px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  outline: none;
-}
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flirty Chat</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div id="chatContainer"></div>
-<div id="inputContainer">
+<div id="controls">
+  <input type="text" id="message" placeholder="Type your message...">
   <select id="languageSelect">
-    <option value="none">Language</option>
-    <option value="es">Spanish</option>
+    <option value="none">None</option>
+    <option value="ja">Japanese</option>
     <option value="fr">French</option>
     <option value="de">German</option>
-    <option value="ja">Japanese</option>
   </select>
-  <input id="message" type="text" placeholder="Message" />
-  <input type="file" id="imageInput" />
+  <input type="file" id="imageInput" accept="image/*">
   <button id="send">Send</button>
 </div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
 <script src="game.js"></script>
 </body>
 </html>

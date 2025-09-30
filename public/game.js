@@ -39,7 +39,8 @@ function addMessage(name, msg, self=false, color=null, image=null) {
   const bubble = document.createElement("div");
   bubble.classList.add("bubble");
   bubble.classList.add(self ? "self" : "other");
-  bubble.style.background = color || (self ? "#0b93f6" : "#fff");
+  bubble.style.background = color || (self ? "#0b93f6" : "#2c2c2e");
+  bubble.style.color = self ? "#fff" : "#fff";
 
   if(image) {
     bubble.innerHTML = `<strong>${name}:</strong><br><img src="${image}" style="max-width:200px;border-radius:10px">`;
@@ -56,7 +57,6 @@ sendBtn.addEventListener("click", async () => {
   const messageText = messageInput.value.trim();
   if(!messageText && !imageInput.files[0]) return;
 
-  // Handle image sending
   if(imageInput.files[0]) {
     const reader = new FileReader();
     reader.onload = () => {
@@ -91,7 +91,7 @@ const config = {
   width: 800,
   height: 400,
   parent: null,
-  backgroundColor: "#e5e5ea",
+  backgroundColor: "#1c1c1e",
   scene: { preload, create, update }
 };
 
