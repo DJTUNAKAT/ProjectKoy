@@ -7,27 +7,9 @@ const playerColor = "#" + Math.floor(Math.random()*16777215).toString(16);
 const chatContainer = document.getElementById("chatContainer");
 const messageInput = document.getElementById("message");
 const sendBtn = document.getElementById("send");
-const languageSelect = document.getElementById("languageSelect");
 const imageInput = document.getElementById("imageInput");
 
-// TRANSLATOR FIX
-async function translate(msg, lang) {
-  if(lang === "none") return msg;
-  try {
-    const res = await fetch("https://libretranslate.de/translate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ q: msg, source: "en", target: lang, format: "text" })
-    });
-    const data = await res.json();
-    return data.translatedText || msg;
-  } catch(e) {
-    console.error("Translation error:", e);
-    return msg;
-  }
-}
-
-// ADD MESSAGE
+// Add message
 function addMessage(name, msg, self=false, color=null, image=null) {
   const bubble = document.createElement("div");
   bubble.classList.add("bubble");
@@ -45,8 +27,8 @@ function addMessage(name, msg, self=false, color=null, image=null) {
   chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
-// SEND CHAT
-sendBtn.addEventListener("click", async () => {
+// Send chat
+sendBtn.addEventListener("click", () => {
   const msg = messageInput.value.trim();
   if(!msg && !imageInput.files[0]) return;
 
@@ -61,25 +43,24 @@ sendBtn.addEventListener("click", async () => {
   }
 
   if(msg) {
-    const translated = await translate(msg, languageSelect.value);
-    socket.emit("chat", { name: playerName, message: translated, color: playerColor });
-    addMessage(playerName, translated, true, playerColor);
+    socket.emit("chat", { name: playerName, message: msg, color: playerColor });
+    addMessage(playerName, msg, true, playerColor);
     messageInput.value = "";
   }
 });
 
-// SPACEBAR FIX
+// Spacebar works
 messageInput.addEventListener("keypress", e => {
   if(e.key === "Enter") sendBtn.click();
 });
 
-// RECEIVE CHAT
+// Receive chat
 socket.on("chat", data => {
   if(data.name === playerName) return;
   addMessage(data.name, data.message || "", false, data.color, data.image || null);
 });
 
-// PHASER FULLSCREEN
+// Phaser fullscreen
 const config = {
   type: Phaser.AUTO,
   width: window.innerWidth,
@@ -122,7 +103,7 @@ function update() {
 
 new Phaser.Game(config);
 
-// RESIZE PHASER ON WINDOW RESIZE
+// Resize Phaser on window resize
 window.addEventListener("resize", () => {
   game.scale.resize(window.innerWidth, window.innerHeight - document.getElementById("controls").offsetHeight - document.getElementById("chatContainer").offsetHeight);
 });
