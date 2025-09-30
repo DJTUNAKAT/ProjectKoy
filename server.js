@@ -5,13 +5,13 @@ const io = require("socket.io")(http);
 
 const PORT = process.env.PORT || 3000;
 
-app.use(express.static("public")); // Serve your HTML/JS/CSS from public folder
+app.use(express.static("public"));
 
 io.on("connection", socket => {
   console.log("User connected:", socket.id);
 
   socket.on("chat", data => {
-    socket.broadcast.emit("chat", data); // send message to everyone else
+    socket.broadcast.emit("chat", data);
   });
 
   socket.on("move", data => {
@@ -23,6 +23,4 @@ io.on("connection", socket => {
   });
 });
 
-http.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+http.listen(PORT, () => console.log(`Server running on port ${PORT}`));
